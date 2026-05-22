@@ -22,7 +22,6 @@ int	app_init(t_app *app)
 
 int	app_run(t_app *app)
 {
-	(void)app;
 	mlx_loop(app->mlx);
 	return (0);
 }
