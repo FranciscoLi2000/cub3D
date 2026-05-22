@@ -49,7 +49,12 @@ void	*mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title)
 	XStoreName(xvar->display, win->window, title);
 	XSetWMProtocols(xvar->display, win->window,
 		&xvar->wm_delete_window, 1);
-	XMapWindow(xvar->display, win->window);
+	if (!XMapWindow(xvar->display, win->window))
+	{
+		XFreeGC(xvar->display, win->gc);
+		free(win);
+		return (NULL);
+	}
 	mlx_int_add_window(xvar, win);
 	return (win);
 }

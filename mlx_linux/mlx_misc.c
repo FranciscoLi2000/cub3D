@@ -36,7 +36,7 @@ static int	mlx_int_parse_hex_color(char *src, unsigned int *color)
 		else if (*src >= 'A' && *src <= 'F')
 			digit = *src - 'A' + 10;
 		else
-			break ;
+			return (0);
 		value = (value << 4) | (unsigned int)digit;
 	}
 	*color = value;
@@ -49,15 +49,21 @@ int	mlx_mouse_get_pos(void *mlx_ptr, void *win_ptr, int *x, int *y)
 	t_win_list	*win;
 	Window		root;
 	Window		child;
+	int			root_x;
+	int			root_y;
+	int			win_x;
+	int			win_y;
 	unsigned int	mask;
 
 	xvar = (t_xvar *)mlx_ptr;
 	win = (t_win_list *)win_ptr;
 	if (!xvar || !win || !x || !y)
 		return (0);
-	if (!XQueryPointer(xvar->display, win->window, &root, &child, x, y,
-			x, y, &mask))
+	if (!XQueryPointer(xvar->display, win->window, &root, &child,
+			&root_x, &root_y, &win_x, &win_y, &mask))
 		return (0);
+	*x = win_x;
+	*y = win_y;
 	return (1);
 }
 
@@ -125,6 +131,8 @@ static int	mlx_int_parse_xpm_header(char *line, int *w, int *h, int *colors,
 	while (mlx_int_isdigit(*cursor))
 		cursor++;
 	*h = mlx_int_atoi(cursor);
+	while (mlx_int_isdigit(*cursor))
+		cursor++;
 	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
 	if (!*cursor)

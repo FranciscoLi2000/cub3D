@@ -37,7 +37,6 @@ int	app_close(t_app *app)
 		return (0);
 	app->running = 0;
 	mlx = app->mlx;
-	app->mlx = NULL;
 	if (mlx)
 		mlx_loop_end(mlx);
 	if (app->win)
@@ -47,6 +46,7 @@ int	app_close(t_app *app)
 	}
 	if (mlx)
 		mlx_destroy_display(mlx);
+	app->mlx = NULL;
 	return (0);
 }
 
