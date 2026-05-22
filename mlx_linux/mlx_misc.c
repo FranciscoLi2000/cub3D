@@ -24,7 +24,7 @@ static int	mlx_int_put_hex_color(char *src, unsigned int *color)
 	unsigned int	value;
 	int				digit;
 
-	if (src[0] != '#' || ft_strlen(src) < 7)
+	if (src[0] != '#' || mlx_int_strlen(src) < 7)
 		return (0);
 	value = 0;
 	while (*++src)
@@ -107,7 +107,7 @@ static int	mlx_int_parse_color(const char *line, unsigned int *color)
 {
 	const char	*pos;
 
-	pos = ft_strchr(line, '#');
+	pos = mlx_int_strchr(line, '#');
 	if (!pos)
 		return (0);
 	return (mlx_int_put_hex_color((char *)pos, color));
@@ -122,15 +122,15 @@ static int	mlx_int_parse_xpm_header(char *line, int *w, int *h, int *colors,
 	while (*cursor == ' ' || *cursor == '\t' || *cursor == '"')
 		cursor++;
 	*w = mlx_int_atoi(cursor);
-	while (ft_isdigit(*cursor))
+	while (mlx_int_isdigit(*cursor))
 		cursor++;
 	*h = mlx_int_atoi(cursor);
-	while (*cursor && !ft_isdigit(*cursor))
+	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
 	*colors = mlx_int_atoi(cursor);
-	while (ft_isdigit(*cursor))
+	while (mlx_int_isdigit(*cursor))
 		cursor++;
-	while (*cursor && !ft_isdigit(*cursor))
+	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
 	*cpp = mlx_int_atoi(cursor);
 	return (*w > 0 && *h > 0 && *colors > 0 && *cpp > 0);
@@ -142,7 +142,7 @@ static char	*mlx_int_clean_xpm_line(char *line)
 
 	while (*line == ' ' || *line == '\t')
 		line++;
-	len = ft_strlen(line);
+	len = mlx_int_strlen(line);
 	while (len > 0 && (line[len - 1] == '\n' || line[len - 1] == '\r'
 			|| line[len - 1] == '"' || line[len - 1] == ','))
 		line[--len] = '\0';
@@ -162,7 +162,7 @@ static int	mlx_int_read_file(const char *filename, char **content)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (0);
-	out = ft_strdup("");
+	out = mlx_int_strdup("");
 	if (!out)
 		return (close(fd), 0);
 	rd = read(fd, buffer, sizeof(buffer) - 1);

@@ -73,5 +73,7 @@ int		mlx_int_atoi(const char *s);
 char	*mlx_int_strdup(const char *s);
 void	*mlx_int_calloc(size_t count, size_t size);
 int		mlx_int_put_pixel(t_img *img, int x, int y, unsigned int color);
+int		mlx_int_isdigit(int c);
+char	*mlx_int_strchr(const char *s, int c);
 
 #endif

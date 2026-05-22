@@ -13,6 +13,9 @@
 # define KEY_ESC 65307
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+# define X11_DESTROY_NOTIFY 17
+# define X11_CLIENT_MESSAGE 33
+# define X11_STRUCTURE_NOTIFY_MASK (1L << 17)
 
 typedef struct s_app
 {

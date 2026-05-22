@@ -23,7 +23,7 @@ void	*mlx_new_image(void *mlx_ptr, int width, int height)
 	img->size_line = img->image->bytes_per_line;
 	img->endian = img->image->byte_order;
 	img->xvar = xvar;
-	data = mlx_int_calloc(1, img->size_line * height);
+	data = mlx_int_calloc((size_t)img->size_line * (size_t)height, 1);
 	if (!data)
 	{
 		XDestroyImage(img->image);
