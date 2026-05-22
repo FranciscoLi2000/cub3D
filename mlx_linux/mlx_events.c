@@ -80,7 +80,13 @@ static int	mlx_int_dispatch_key(t_win_list *win, t_xevent *event)
 {
 	KeySym	keysym;
 
-	if (win->key_hook)
+	if (win->hooks[event->type].hook)
+	{
+		keysym = XLookupKeysym(&event->xkey, 0);
+		return (((int (*)(int, void *))win->hooks[event->type].hook)(
+				(int)keysym, win->hooks[event->type].param));
+	}
+	if (event->type == KeyPress && win->key_hook)
 	{
 		keysym = XLookupKeysym(&event->xkey, 0);
 		return (((int (*)(int, void *))win->key_hook)((int)keysym,
@@ -91,7 +97,11 @@ static int	mlx_int_dispatch_key(t_win_list *win, t_xevent *event)
 
 static int	mlx_int_dispatch_mouse(t_win_list *win, t_xevent *event)
 {
-	if (win->mouse_hook)
+	if (win->hooks[event->type].hook)
+		return (((int (*)(int, int, int, void *))win->hooks[event->type].hook)(
+				event->xbutton.button, event->xbutton.x,
+				event->xbutton.y, win->hooks[event->type].param));
+	if (event->type == ButtonPress && win->mouse_hook)
 		return (((int (*)(int, int, int, void *))win->mouse_hook)(
 				event->xbutton.button, event->xbutton.x,
 				event->xbutton.y, win->mouse_param));
@@ -125,10 +135,17 @@ void	mlx_int_event_dispatch(t_xvar *xvar, t_xevent *event)
 	}
 	if (event->type == KeyPress)
 		mlx_int_dispatch_key(win, event);
+	else if (event->type == KeyRelease)
+		mlx_int_dispatch_key(win, event);
 	else if (event->type == ButtonPress)
+		mlx_int_dispatch_mouse(win, event);
+	else if (event->type == ButtonRelease)
 		mlx_int_dispatch_mouse(win, event);
 	else if (event->type == Expose && win->expose_hook)
 		((int (*)(void *))win->expose_hook)(win->expose_param);
+	else if (event->type == Expose && win->hooks[Expose].hook)
+		((int (*)(void *))win->hooks[Expose].hook)(
+			win->hooks[Expose].param);
 	else if (event->type == DestroyNotify && win->hooks[DestroyNotify].hook)
 		((int (*)(void *))win->hooks[DestroyNotify].hook)(
 			win->hooks[DestroyNotify].param);
@@ -136,4 +153,7 @@ void	mlx_int_event_dispatch(t_xvar *xvar, t_xevent *event)
 		&& win->hooks[ConfigureNotify].hook)
 		((int (*)(void *))win->hooks[ConfigureNotify].hook)(
 			win->hooks[ConfigureNotify].param);
+	else if (win->hooks[event->type].hook)
+		((int (*)(void *))win->hooks[event->type].hook)(
+			win->hooks[event->type].param);
 }

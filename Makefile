@@ -17,7 +17,9 @@ MLX_SRC		= mlx_linux/mlx_init.c \
 SRC			= srcs/main.c \
 			  srcs/app.c \
 			  srcs/error.c \
-			  srcs/utils.c
+			  srcs/utils.c \
+			  srcs/scene.c \
+			  srcs/render.c
 
 OBJ			= $(SRC:.c=.o)
 MLX_OBJ		= $(MLX_SRC:.c=.o)
@@ -29,7 +31,7 @@ $(MLX_NAME): $(MLX_OBJ)
 
 $(NAME): $(OBJ) $(MLX_NAME)
 	$(CC) $(CFLAGS) $(OBJ) -L. -lmlx \
-		-L/lib/x86_64-linux-gnu -l:libX11.so.6 -l:libXext.so.6 -o $(NAME)
+		-L/lib/x86_64-linux-gnu -l:libX11.so.6 -l:libXext.so.6 -lm -o $(NAME)
 
 clean:
 	$(RM) $(OBJ) $(MLX_OBJ)
