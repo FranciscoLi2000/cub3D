@@ -1,5 +1,7 @@
 # Prerequisites
 *.d
+cub3D
+libmlx.a
 
 # Object files
 *.o
