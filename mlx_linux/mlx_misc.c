@@ -24,7 +24,7 @@ static int	mlx_int_put_hex_color(char *src, unsigned int *color)
 	unsigned int	value;
 	int				digit;
 
-	if (src[0] != '#' || mlx_int_strlen(src) < 7)
+	if (src[0] != '#' || mlx_int_strlen(src) != 7)
 		return (0);
 	value = 0;
 	while (*++src)
@@ -127,11 +127,15 @@ static int	mlx_int_parse_xpm_header(char *line, int *w, int *h, int *colors,
 	*h = mlx_int_atoi(cursor);
 	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
+	if (!mlx_int_isdigit(*cursor))
+		return (0);
 	*colors = mlx_int_atoi(cursor);
 	while (mlx_int_isdigit(*cursor))
 		cursor++;
 	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
+	if (!mlx_int_isdigit(*cursor))
+		return (0);
 	*cpp = mlx_int_atoi(cursor);
 	return (*w > 0 && *h > 0 && *colors > 0 && *cpp > 0);
 }

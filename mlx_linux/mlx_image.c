@@ -7,8 +7,10 @@ void	*mlx_new_image(void *mlx_ptr, int width, int height)
 	char	*data;
 
 	xvar = (t_xvar *)mlx_ptr;
+	if (!xvar)
+		return (NULL);
 	img = mlx_int_calloc(1, sizeof(*img));
-	if (!xvar || !img)
+	if (!img)
 		return (NULL);
 	img->image = XCreateImage(xvar->display, xvar->visual, xvar->depth,
 			ZPixmap, 0, NULL, width, height, 32, 0);

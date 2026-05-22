@@ -27,8 +27,10 @@ void	*mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title)
 	long		mask;
 
 	xvar = (t_xvar *)mlx_ptr;
+	if (!xvar)
+		return (NULL);
 	win = mlx_int_calloc(1, sizeof(*win));
-	if (!xvar || !win)
+	if (!win)
 		return (NULL);
 	win->window = XCreateSimpleWindow(xvar->display, xvar->root, 0, 0,
 			size_x, size_y, 0, 0, 0);

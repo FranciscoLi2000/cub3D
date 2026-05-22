@@ -29,21 +29,22 @@ int	app_run(t_app *app)
 
 int	app_close(t_app *app)
 {
+	void	*mlx;
+
 	if (!app || !app->running)
 		return (0);
 	app->running = 0;
-	if (app->mlx)
-		mlx_loop_end(app->mlx);
+	mlx = app->mlx;
+	app->mlx = NULL;
+	if (mlx)
+		mlx_loop_end(mlx);
 	if (app->win)
 	{
-		mlx_destroy_window(app->mlx, app->win);
+		mlx_destroy_window(mlx, app->win);
 		app->win = NULL;
 	}
-	if (app->mlx)
-	{
-		mlx_destroy_display(app->mlx);
-		app->mlx = NULL;
-	}
+	if (mlx)
+		mlx_destroy_display(mlx);
 	return (0);
 }
 
