@@ -197,6 +197,7 @@ static int	mlx_int_fill_image_from_xpm(t_xvar *xvar, char **lines, int w,
 	char			*line;
 	size_t			line_len;
 	int				index;
+	int				pixel;
 
 	i = -1;
 	while (++i < 256)
@@ -220,8 +221,6 @@ static int	mlx_int_fill_image_from_xpm(t_xvar *xvar, char **lines, int w,
 		j = 0;
 		while (j < w)
 		{
-			int	pixel;
-
 			pixel = j * cpp;
 			index = 0;
 			while (index < colors)
