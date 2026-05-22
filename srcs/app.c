@@ -12,6 +12,9 @@ int	app_init(t_app *app)
 			"cub3D");
 	if (!app->win)
 		return (ft_error("mlx_new_window failed"));
+	/* ClientMessage catches the window manager close button.
+	** DestroyNotify keeps cleanup safe if the server tears the window down.
+	*/
 	mlx_hook(app->win, X11_DESTROY_NOTIFY, X11_STRUCTURE_NOTIFY_MASK,
 		(int (*)())app_close_hook, app);
 	mlx_hook(app->win, X11_CLIENT_MESSAGE, X11_STRUCTURE_NOTIFY_MASK,

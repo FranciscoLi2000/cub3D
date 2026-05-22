@@ -19,7 +19,7 @@ void	mlx_set_font(void *mlx_ptr, void *win_ptr, char *name)
 	(void)name;
 }
 
-static int	mlx_int_put_hex_color(char *src, unsigned int *color)
+static int	mlx_int_parse_hex_color(char *src, unsigned int *color)
 {
 	unsigned int	value;
 	int				digit;
@@ -110,7 +110,7 @@ static int	mlx_int_parse_color(const char *line, unsigned int *color)
 	pos = mlx_int_strchr(line, '#');
 	if (!pos)
 		return (0);
-	return (mlx_int_put_hex_color((char *)pos, color));
+	return (mlx_int_parse_hex_color((char *)pos, color));
 }
 
 static int	mlx_int_parse_xpm_header(char *line, int *w, int *h, int *colors,
@@ -127,16 +127,18 @@ static int	mlx_int_parse_xpm_header(char *line, int *w, int *h, int *colors,
 	*h = mlx_int_atoi(cursor);
 	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
-	if (!mlx_int_isdigit(*cursor))
+	if (!*cursor)
 		return (0);
 	*colors = mlx_int_atoi(cursor);
 	while (mlx_int_isdigit(*cursor))
 		cursor++;
 	while (*cursor && !mlx_int_isdigit(*cursor))
 		cursor++;
-	if (!mlx_int_isdigit(*cursor))
+	if (!*cursor)
 		return (0);
 	*cpp = mlx_int_atoi(cursor);
+	if (*cpp < 1 || *cpp > 2)
+		return (0);
 	return (*w > 0 && *h > 0 && *colors > 0 && *cpp > 0);
 }
 
@@ -193,6 +195,7 @@ static int	mlx_int_fill_image_from_xpm(t_xvar *xvar, char **lines, int w,
 	unsigned int	palette[256];
 	char			keys[256][3];
 	char			*line;
+	size_t			line_len;
 	int				index;
 
 	i = -1;
@@ -213,16 +216,22 @@ static int	mlx_int_fill_image_from_xpm(t_xvar *xvar, char **lines, int w,
 	while (i < h)
 	{
 		line = mlx_int_clean_xpm_line(lines[1 + colors + i]);
+		line_len = mlx_int_strlen(line);
 		j = 0;
 		while (j < w)
 		{
+			int	pixel;
+
+			pixel = j * cpp;
 			index = 0;
 			while (index < colors)
 			{
-				if (cpp == 1 && line[j] == keys[index][0])
+				if (cpp == 1 && pixel < (int)line_len
+					&& line[pixel] == keys[index][0])
 					break ;
-				if (cpp > 1 && line[j] == keys[index][0]
-					&& line[j + 1] == keys[index][1])
+				if (cpp > 1 && pixel + 1 < (int)line_len
+					&& line[pixel] == keys[index][0]
+					&& line[pixel + 1] == keys[index][1])
 					break ;
 				index++;
 			}
